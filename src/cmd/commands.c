@@ -3,5 +3,5 @@
 
 QWS_Command QWS_CommandMap[QWS_COMMAND_COUNT] = 
 {
-    {"create", create}
+    {"create", "t", 1, 1, cmd_create}
 };

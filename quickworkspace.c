@@ -1,29 +1,82 @@
-#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-
 #include "qws_error.h"
 #include "qws_command.h"
 
 
-bool QWS_Route(int argc, char **argv)
+bool findFlag(char f, char *flags)
 {
-    if(argc < 2)
+    for(int i = 0; i < strlen(flags); ++i)
+        if(flags[i] == f) return true;
+    return false;
+}
+
+
+QWS_Command *findCommand(const char *name)
+{
+    for(int i = 0; i < QWS_COMMAND_COUNT; ++i)
+        if(!strcmp(name, QWS_CommandMap[i].name))
+            return &QWS_CommandMap[i];
+    
+    return NULL;
+}
+
+
+bool QWS_Parse(int argc, char **argv)
+{
+    if(argc < 2)    // no tokens aside from executable name.
     {
         QWS_ErrorPush(QWS_ERROR_INVALID_COMMAND, "Missing command.");
         return false;
     }
-    if(*argv[1] != '-')
-    {
-        for(int i = 0; i < QWS_COMMAND_COUNT; ++i)
-            if(!strcmp(argv[1], QWS_CommandMap[i].name))
-                return QWS_CommandMap[i].handler(argc - 1, ++argv);
 
-        QWS_ErrorPush(QWS_ERROR_INVALID_COMMAND, "No such command.");
+    int cursor = 1;     // cursor pointing at where the current reading point is.
+
+    for(; cursor < argc && *argv[cursor] == '-'; ++cursor);     // global flags
+
+    QWS_Command *command = findCommand(argv[cursor]);
+    if(!command) // no command matching found
+    {
+        QWS_ErrorPush(QWS_ERROR_INVALID_COMMAND, argv[cursor]);
         return false;
     }
 
-    return true;
+    ++cursor;   // move cursor after reading command name.
+    /*if(cursor >= argc)
+    {
+        char msg[4];
+        snprintf(msg, 3, "%d", argc - cursor);
+        QWS_ErrorPush(QWS_ERROR_INVALID_NUMBER_OF_ARGUMENTS, (const char *) msg);
+        return false;
+    }*/
+
+    QWS_Flags flags = {0};
+    for(; cursor < argc && *argv[cursor] == '-'; ++cursor)   //  read flags
+    {
+        for(char *c = argv[cursor] + 1; *c; ++c)
+        {
+            if(!findFlag(*c, command->flags))   // if command doesn't support flag, halt the process.
+            {
+                char msg[3] = "-";
+                snprintf(msg, 1, "%c", *c);
+                QWS_ErrorPush(QWS_ERROR_INVALID_FLAG, (const char*) msg);
+                return false;
+            }
+            flags[*c] = true;   // if it does, activate it in the flag boolean array.
+        }
+    }
+
+    int newArgc = argc - cursor;
+    
+    if(newArgc > command->maxArg || newArgc < command->minArg)
+    {
+        char msg[4];
+        snprintf(msg, 3, "%d", newArgc);
+        QWS_ErrorPush(QWS_ERROR_INVALID_NUMBER_OF_ARGUMENTS, (const char *) msg);
+        return false;
+    }
+
+    return command->handler(flags, newArgc, argv + cursor);
 }
 
 
@@ -32,9 +85,7 @@ int main(int argc, char **argv)
 {   
     if(!QWS_ErrorInit()) return 1;
 
-    //for(int i = 0; i < argc; ++i) printf("%s\t", argv[i]);
-
-    if(!QWS_Route(argc, argv))
+    if(!QWS_Parse(argc, argv))
     {
         QWS_ErrorDebug();
         return 1;

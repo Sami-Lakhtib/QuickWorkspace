@@ -6,60 +6,17 @@
 #define ARGUMENT_COUNT 1
 
 
-bool create(int argc, char **argv)
+bool cmd_create(QWS_Flags flags, int argc, char **argv)
 {
-    int i = 1;
-
-    bool testMessage = false;
-
-    if(argc < ARGUMENT_COUNT)
+    FILE *F = fopen(argv[0], "w");
+    if(!F)
     {
-        QWS_ErrorPush(QWS_ERROR_INVALID_NUMBER_OF_ARGUMENTS, "Missing arguments");
+        QWS_ErrorPush(QWS_ERROR_FAILED_TO_CREATE_FILE, argv[0]);
         return false;
     }
 
-    if(*argv[1] == '-')
-    {
-        for(; i < argc; ++i)
-        {
-            char *token = argv[i];
-            if(*token == '-')
-            {
-                for(char *c = token + 1; c - token < strlen(token); ++c)
-                    switch(*c)
-                    {
-                        case 't':
-                            testMessage = true;
-                            break;
-                        default:
-                            char msg[3] = "-";
-                            strncat(msg, c, 1);
-                            QWS_ErrorPush(QWS_ERROR_INVALID_FLAG, (const char*) msg);
-                            return false;
-                    }   
-            }
-            else break;
-        }
-    }
+    if(flags['t']) fprintf(F, "This is a test message.");
 
-    if(argc - i != ARGUMENT_COUNT)
-    {   
-        char buf[2];
-        snprintf(buf, 1, "%d", argc - i);
-        QWS_ErrorPush(QWS_ERROR_INVALID_NUMBER_OF_ARGUMENTS, (const char*) buf);
-        return false;
-    }
-
-    FILE *f = fopen(argv[i], "w");
-    if(!f)
-    {
-        QWS_ErrorPush(QWS_ERROR_FAILED_TO_CREATE_FILE, argv[i]);
-        return false;
-    }
-
-    if(testMessage) fprintf(f, "This is a test message.");
-    
-    fclose(f);
-
+    fclose(F);
     return true;
 }
