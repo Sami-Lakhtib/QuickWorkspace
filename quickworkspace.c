@@ -31,8 +31,7 @@ bool QWS_Parse(int argc, char **argv)
     }
 
     int cursor = 1;     // cursor pointing at where the current reading point is.
-
-    for(; cursor < argc && *argv[cursor] == '-'; ++cursor);     // global flags
+    for(; cursor < argc && *argv[cursor] == '-'; ++cursor);     // global flags (currently not supported.)
 
     QWS_Command *command = findCommand(argv[cursor]);
     if(!command) // no command matching found
@@ -42,13 +41,6 @@ bool QWS_Parse(int argc, char **argv)
     }
 
     ++cursor;   // move cursor after reading command name.
-    /*if(cursor >= argc)
-    {
-        char msg[4];
-        snprintf(msg, 3, "%d", argc - cursor);
-        QWS_ErrorPush(QWS_ERROR_INVALID_NUMBER_OF_ARGUMENTS, (const char *) msg);
-        return false;
-    }*/
 
     QWS_Flags flags = {0};
     for(; cursor < argc && *argv[cursor] == '-'; ++cursor)   //  read flags
@@ -67,7 +59,7 @@ bool QWS_Parse(int argc, char **argv)
     }
 
     int newArgc = argc - cursor;
-    
+
     if(newArgc > command->maxArg || newArgc < command->minArg)
     {
         char msg[4];
