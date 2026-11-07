@@ -3,7 +3,6 @@
 #include "qws_error.h"
 #include "qws_command.h"
 
-#define ARGUMENT_COUNT 1
 
 
 bool cmd_create(QWS_Flags flags, int argc, char **argv)

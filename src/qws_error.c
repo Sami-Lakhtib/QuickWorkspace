@@ -87,10 +87,12 @@ bool QWS_ErrorInit(void)
 {
     errorStack = NULL;
 
-    QWS_ErrorMessages[QWS_ERROR_INVALID_FLAG] = "Unrecognized flag";
+    QWS_ErrorMessages[QWS_ERROR_INVALID_FLAG] = "Invalid flag";
     QWS_ErrorMessages[QWS_ERROR_INVALID_COMMAND] = "Invalid command";
+    QWS_ErrorMessages[QWS_ERROR_INVALID_ARGUMENT] = "Invalid argument";
     QWS_ErrorMessages[QWS_ERROR_INVALID_NUMBER_OF_ARGUMENTS] = "Invalid number of arguments";
     QWS_ErrorMessages[QWS_ERROR_FAILED_TO_CREATE_FILE] = "Failed to create file.";
+    QWS_ErrorMessages[QWS_ERROR_FAILED_TO_CREATE_FOLDER] = "Failed to create folder";
 
     return true;
 }

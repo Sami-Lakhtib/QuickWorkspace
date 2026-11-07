@@ -49,8 +49,8 @@ bool QWS_Parse(int argc, char **argv)
         {
             if(!findFlag(*c, command->flags))   // if command doesn't support flag, halt the process.
             {
-                char msg[3] = "-";
-                snprintf(msg, 1, "%c", *c);
+                char msg[3];
+                snprintf(msg, 3, "-%c", *c);
                 QWS_ErrorPush(QWS_ERROR_INVALID_FLAG, (const char*) msg);
                 return false;
             }
