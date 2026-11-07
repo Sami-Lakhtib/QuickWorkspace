@@ -6,14 +6,14 @@
 #define BUFFER_MAX_SIZE 256
 #define PROJECT_NAME 0
 #define PROJECT_TYPE 1
-#define MAKEFILE_TEMPLATE   "FLAGS := -I include -L lib\n"\
+#define C_MAKEFILE_TEMPLATE   "FLAGS := -I include -L lib\n"\
                             "SRC := $(wildcard *.c src/*.c)\n"\
                             "OUTPUT := output\n\n"\
                             "RUN: BUILD\n"\
 	                        "\t@$(OUTPUT)\n"\
                             "BUILD:\n"\
 	                        "\t@gcc $(SRC) $(FLAGS) -o $(OUTPUT)\n"
-#define GITIGNORE_TEMPlATE  "*.txt\n"\
+#define C_GITIGNORE_TEMPlATE  "*.txt\n"\
                             "makefile"
 
 const char *CPP_DIRS[] = {"include", "src", "lib"};
@@ -131,19 +131,35 @@ bool cmd_new(QWS_Flags flags, int argc, char **argv)
             snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", argv[PROJECT_NAME], CPP_FILES[0]);
             if(!writeToFile(
                 pathBuffer,
-                MAKEFILE_TEMPLATE)
+                C_MAKEFILE_TEMPLATE)
             ) return false;
 
             snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", argv[PROJECT_NAME], CPP_FILES[1]);
             if(!writeToFile(
                 pathBuffer,
-                GITIGNORE_TEMPlATE)
+                C_GITIGNORE_TEMPlATE)
             ) return false;
         }
 
         return true;
     }
 
+    if(!strcmp(argv[PROJECT_TYPE], "web"))
+    {
+        if(!createFolders(
+            argv[PROJECT_NAME],
+            WEB_DIRS,
+            sizeof(WEB_DIRS) / sizeof(*WEB_DIRS))
+        ) return false;
+
+        if(!createFiles(
+            argv[PROJECT_NAME],
+            WEB_FILES,
+            sizeof(WEB_FILES) / sizeof(*WEB_FILES))
+        ) return false;
+
+        return true;
+    }
 
 
 
