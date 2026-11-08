@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 typedef enum QWS_ErrorType {
+    QWS_ERROR_NONE,
     QWS_ERROR_INVALID_COMMAND,
     QWS_ERROR_INVALID_FLAG,
     QWS_ERROR_INVALID_ARGUMENT,

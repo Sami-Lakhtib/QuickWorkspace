@@ -1,5 +1,6 @@
 #ifndef QWS_COMMAND_H
 #define QWS_COMMAND_H
+
 #include <stdio.h>
 #include <stdbool.h>
 

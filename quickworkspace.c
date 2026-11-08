@@ -3,6 +3,7 @@
 #include "qws_error.h"
 #include "qws_command.h"
 
+#include "qws_dir.h"
 
 bool findFlag(char f, char *flags)
 {
@@ -74,9 +75,10 @@ bool QWS_Parse(int argc, char **argv)
 
 
 int main(int argc, char **argv)
-{   
+{  
     if(!QWS_ErrorInit()) return 1;
-
+    
+    
     if(!QWS_Parse(argc, argv))
     {
         QWS_ErrorDebug();

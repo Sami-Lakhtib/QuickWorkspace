@@ -87,6 +87,7 @@ bool QWS_ErrorInit(void)
 {
     errorStack = NULL;
 
+    QWS_ErrorMessages[QWS_ERROR_NONE] = "";
     QWS_ErrorMessages[QWS_ERROR_INVALID_FLAG] = "Invalid flag";
     QWS_ErrorMessages[QWS_ERROR_INVALID_COMMAND] = "Invalid command";
     QWS_ErrorMessages[QWS_ERROR_INVALID_ARGUMENT] = "Invalid argument";

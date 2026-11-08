@@ -2,20 +2,22 @@
 #include <string.h>
 #include "qws_error.h"
 #include "qws_command.h"
+#include "qws_dir.h"
 
-
+#define PROJECT_NAME 0
+#define TEST_MESSAGE "This is a test message"
 
 bool cmd_create(QWS_Flags flags, int argc, char **argv)
 {
-    FILE *F = fopen(argv[0], "w");
+    FILE *F = QWS_CreateFile(argv[PROJECT_NAME]);
     if(!F)
     {
-        QWS_ErrorPush(QWS_ERROR_FAILED_TO_CREATE_FILE, argv[0]);
+        QWS_ErrorPush(QWS_ERROR_NONE, "Couldn't open file.");
         return false;
     }
 
-    if(flags['t']) fprintf(F, "This is a test message.");
+    if(flags['t'])
+        fwrite(TEST_MESSAGE, sizeof(char), strlen(TEST_MESSAGE), F);
 
-    fclose(F);
     return true;
 }
