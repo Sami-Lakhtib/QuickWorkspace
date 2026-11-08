@@ -13,4 +13,5 @@ Takes an optional -d flag to have some files filled with default content.
 ```bash
 qws create -t file.txt
 qws new -d project cpp
+qws new project_2 web
 ```
